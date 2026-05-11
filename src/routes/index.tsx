@@ -1,15 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
-import TopBar from "../components/TopBar";
-import Sidebar from "../components/Sidebar";
-import BentoCard from "../components/BentoCard";
-import ProjectMosaic from "../components/ProjectMosaic";
-import StackSection from "../components/StackSection";
-import MasterSection from "../components/MasterSection";
-import ContactSection from "../components/ContactSection";
-import StatsSection from "../components/StatsSection";
-import ProjectDetail from "../components/ProjectDetail";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -183,31 +173,39 @@ function Portfolio() {
     " May 11, 2026";
 
   return (
-    <div className="min-h-screen bg-[var(--bv-bg)] text-[var(--bv-text)]">
-      <div className="bv-noise" />
-      <AnimatePresence mode="wait">
-        {active ? (
-          <ProjectDetail key="detail" project={active} onBack={() => setActive(null)} />
-        ) : (
-          <Bento key="bento" onOpen={setActive} now={now} />
-        )}
-      </AnimatePresence>
-
-      {/* Status FAB */}
-      <div className="fixed right-5 bottom-5 z-50 flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-[12px] text-xs font-medium text-[var(--bv-text-2)] shadow-lg">
-        <div className="bv-dot-pulse" />
-        Open to work
-      </div>
+    <div className="min-h-screen bg-[#000000] text-[#ffffff]">
+      {active ? (
+        <ProjectDetail project={active} onBack={() => setActive(null)} />
+      ) : (
+        <Bento onOpen={setActive} now={now} />
+      )}
     </div>
   );
 }
 
 function Bento({ onOpen, now }: { onOpen: (p: Project) => void; now: string }) {
   return (
-    <main className="max-w-[1280px] mx-auto px-5 py-5">
-      <TopBar now={now} />
+    <main className="max-w-[1280px] mx-auto p-5">
+      {/* Top bar */}
+      <header className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center font-extrabold text-sm text-black">
+            AR
+          </div>
+          <div>
+            <div className="text-base font-extrabold tracking-tight">ANTAN R.</div>
+            <div className="text-[10px] font-medium tracking-[0.12em] text-[#b3b3b3] uppercase">
+              SOFTWARE ENGINEER
+            </div>
+          </div>
+        </div>
+        <div className="text-sm text-[#b3b3b3]">
+          {now}
+        </div>
+      </header>
 
-      <div className="grid grid-cols-[240px_1fr_1fr] grid-rows-[auto_auto] gap-2.5"
+      {/* Bento grid */}
+      <div className="grid grid-cols-[220px_1fr_1fr] gap-3"
         style={{
           gridTemplateAreas: `
             "rail projects stack"
@@ -216,35 +214,181 @@ function Bento({ onOpen, now }: { onOpen: (p: Project) => void; now: string }) {
           `,
         }}
       >
-        {/* Left sidebar */}
-        <div style={{ gridArea: "rail" }}>
-          <Sidebar onMoreAboutMe={() => onOpen(projects[0])} />
+        {/* Left rail */}
+        <div style={{ gridArea: "rail" }} className="flex flex-col gap-4 pt-1">
+          <p className="text-sm text-[#b3b3b3] leading-relaxed m-0">
+            I specialize in crafting AI-powered, performant web experiences. With a passion for clean architectures and fast feedback loops, I turn fuzzy product ideas into shipped, delightful interfaces across the modern web.
+          </p>
+          <button
+            onClick={() => onOpen(projects[0])}
+            className="w-fit px-5 py-2.5 rounded-full border border-white/10 bg-white/5 text-sm font-semibold text-[#ffffff] hover:bg-white/10 transition-colors"
+          >
+            More about Me
+          </button>
+          <div className="flex gap-2">
+            <a href="https://github.com/antanroy" className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-sm text-[#b3b3b3] hover:bg-white/10 hover:text-[#ffffff] transition-colors">G</a>
+            <a href="https://linkedin.com" className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-sm text-[#b3b3b3] hover:bg-white/10 hover:text-[#ffffff] transition-colors">in</a>
+            <a href="mailto:antan@example.com" className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-sm text-[#b3b3b3] hover:bg-white/10 hover:text-[#ffffff] transition-colors">@</a>
+          </div>
+          <div className="flex flex-col gap-1 text-xs text-[#b3b3b3] mt-auto pt-4">
+            <div>&copy; Antan Roy &middot; 2026</div>
+            <a href="#" className="hover:text-[#ffffff]">Licensing</a>
+            <a href="#" className="hover:text-[#ffffff]">Privacy Policy</a>
+            <a href="#" className="hover:text-[#ffffff]">Cookie Policy</a>
+          </div>
         </div>
 
-        {/* Projects mosaic */}
-        <BentoCard className="!p-3.5" style={{ gridArea: "projects" }} delay={0.1}>
-          <ProjectMosaic projects={projects} onOpen={onOpen} />
-        </BentoCard>
+        {/* Projects */}
+        <div style={{ gridArea: "projects" }} className="bg-[#000000] rounded-[24px] p-3 min-h-[380px] cursor-pointer hover:bg-[#0a0a0a] transition-colors" onClick={() => onOpen(projects[0])}>
+          <div className="grid grid-cols-3 grid-rows-3 gap-2 h-full min-h-[360px]">
+            {projects.slice(0, 6).map((p, i) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onOpen(p); }}
+                className={`relative border-none rounded-[10px] p-3 text-[#ffffff] font-bold text-left flex items-end cursor-pointer transition-transform hover:scale-[1.02] ${
+                  i === 0 ? "col-span-1 row-span-2 bg-gradient-to-br from-slate-800 to-slate-700" :
+                  i === 1 ? "bg-gradient-to-br from-amber-900 to-amber-800" :
+                  i === 2 ? "bg-gradient-to-br from-gray-800 to-gray-900" :
+                  i === 3 ? "col-span-2 bg-gradient-to-br from-purple-700 to-purple-600" :
+                  i === 4 ? "bg-gradient-to-br from-emerald-800 to-emerald-700" :
+                  "col-span-2 bg-gradient-to-br from-pink-800 to-pink-700"
+                }`}
+              >
+                <span className="bg-black/55 px-2 py-1 rounded-md text-[11px] font-semibold">
+                  {p.name}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Stack */}
-        <BentoCard className="!bg-[var(--bv-blue)]" style={{ gridArea: "stack" }} delay={0.15}>
-          <StackSection stack={stack} />
-        </BentoCard>
+        <div style={{ gridArea: "stack" }} className="bg-[#214ade] rounded-[24px] p-5 min-h-[180px]">
+          <h3 className="text-lg font-bold mb-3 text-[#ffffff]">My Stack</h3>
+          <div className="flex flex-wrap gap-2">
+            {stack.map((s) => (
+              <div key={s.name} className="w-10 h-10 rounded-[24px] flex items-center justify-center font-extrabold text-white text-base shadow-md border-2 border-white/20" style={{ background: s.color }}>
+                {s.letter}
+              </div>
+            ))}
+          </div>
+        </div>
 
-        {/* Master / Role */}
-        <BentoCard style={{ gridArea: "master" }} delay={0.2} onClick={() => onOpen(projects[1])} cta>
-          <MasterSection />
-        </BentoCard>
+        {/* Master */}
+        <div style={{ gridArea: "master" }} className="bg-[#242424] rounded-[24px] p-5 min-h-[220px] cursor-pointer hover:bg-[#2a2a2a] transition-colors" onClick={() => onOpen(projects[1])}>
+          <div className="bg-[#000000] rounded-[10px] p-2 mb-3 border border-white/10">
+            <div className="flex gap-1 mb-2">
+              <span className="w-2 h-2 rounded-full bg-white/20" />
+              <span className="w-2 h-2 rounded-full bg-white/20" />
+              <span className="w-2 h-2 rounded-full bg-white/20" />
+            </div>
+            <div className="flex gap-1.5 min-h-[90px]">
+              <div className="w-[28%] bg-white/5 rounded-lg" />
+              <div className="flex-1 bg-white/5 rounded-lg flex items-center justify-center p-2">
+                <div className="bg-gradient-to-r from-pink-500 to-purple-500 px-3 py-2 rounded-lg">
+                  <div className="text-[11px] font-bold text-white leading-tight">Empower</div>
+                  <div className="text-[11px] font-bold text-white leading-tight">Your Engineering</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h3 className="text-lg font-extrabold text-[#ffffff]">Software Engineer</h3>
+        </div>
 
         {/* Contact */}
-        <BentoCard className="!bg-[var(--bv-orange)]" style={{ gridArea: "contact" }} delay={0.25}>
-          <ContactSection />
-        </BentoCard>
+        <div style={{ gridArea: "contact" }} className="bg-[#f7a307] rounded-[24px] p-5 min-h-[200px] relative overflow-hidden">
+          <h3 className="text-lg font-bold mb-3 text-black">Contact</h3>
+          <div className="absolute -right-4 -bottom-4 w-28 h-28 rounded-full opacity-60"
+            style={{
+              background: "radial-gradient(circle at 35% 35%, #1f2937, #0a0a0a 70%)",
+              boxShadow: "inset -8px -8px 20px rgba(0,0,0,0.5)",
+            }}
+          />
+          <a href="mailto:antan@example.com" className="absolute right-4 bottom-4 w-8 h-8 rounded-full bg-black flex items-center justify-center text-sm font-bold text-white">↗</a>
+        </div>
 
         {/* Stats */}
-        <BentoCard className="!bg-[#0a0a0a]" style={{ gridArea: "stats" }} delay={0.3}>
-          <StatsSection />
-        </BentoCard>
+        <div style={{ gridArea: "stats" }} className="bg-[#000000] rounded-[24px] p-5 min-h-[200px] flex flex-col items-center justify-center gap-2 text-center">
+          <div className="text-yellow-400 text-sm tracking-[2px]">★★★★★</div>
+          <div className="text-4xl font-extrabold text-[#ffffff]">7.5</div>
+          <div className="text-[11px] tracking-[0.18em] text-[#b3b3b3] uppercase font-medium">CGPA</div>
+          <div className="flex mt-2">
+            {["A", "B", "C"].map((letter, i) => (
+              <div key={letter} className="w-7 h-7 rounded-full border-2 border-[#000000] flex items-center justify-center font-bold text-[11px] text-black -ml-2 first:ml-0" style={{ background: i === 0 ? "#22c55e" : i === 1 ? "#3b82f6" : "#f97316" }}>
+                {letter}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Status FAB */}
+      <div className="fixed right-5 bottom-5 z-50 flex items-center gap-2 px-3.5 py-2 rounded-[24px] bg-white/5 border border-white/10 text-xs font-medium text-[#b3b3b3]">
+        <div className="w-2 h-2 rounded-full bg-green-500" />
+        Open to work
+      </div>
+    </main>
+  );
+}
+
+function ProjectDetail({ project, onBack }: { project: Project; onBack: () => void }) {
+  return (
+    <main className="max-w-[1080px] mx-auto px-5 py-8 pb-20">
+      <button onClick={onBack} className="bg-transparent text-[#b3b3b3] border border-white/10 px-4 py-2 rounded-[24px] text-xs font-semibold mb-6 hover:text-[#ffffff] hover:border-white/20 transition-colors">
+        ← Back
+      </button>
+
+      <div className="text-[11px] tracking-[0.18em] text-[#b3b3b3] uppercase font-medium mb-2">
+        {project.type}
+      </div>
+
+      <h1 className="text-[clamp(36px,6vw,64px)] font-extrabold tracking-tight leading-none mb-4 text-[#ffffff]">
+        {project.name}
+      </h1>
+
+      <p className="text-sm font-medium leading-relaxed text-[#b3b3b3] max-w-[70ch]">
+        {project.description}
+      </p>
+
+      <div className="flex flex-wrap gap-2 mt-5">
+        {[
+          { label: "Status", value: project.status },
+          { label: "Type", value: project.type },
+          { label: "Stack", value: project.tech.join(" · ") },
+          { label: "Year", value: project.year },
+        ].map((m) => (
+          <span key={m.label} className="text-xs px-3.5 py-2 border border-white/10 rounded-[24px] text-[#ffffff] bg-white/5">
+            <span className="text-[10px] tracking-[0.1em] uppercase text-[#b3b3b3] mr-2">{m.label}</span>
+            {m.value}
+          </span>
+        ))}
+      </div>
+
+      <div className="w-full aspect-[21/9] rounded-[24px] my-6 bg-[#0a0a0a]" />
+
+      <h2 className="text-xl font-bold mt-8 mb-4 text-[#ffffff]">Features</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        {project.features.map((f) => (
+          <div key={f.title} className="rounded-[24px] p-5 bg-white/5 border border-white/10">
+            <h4 className="text-sm font-bold mb-1.5 text-[#ffffff]">{f.title}</h4>
+            <p className="text-xs font-medium leading-relaxed text-[#b3b3b3]">{f.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 className="text-xl font-bold mt-8 mb-4 text-[#ffffff]">Overview</h2>
+      <p className="text-sm font-medium leading-relaxed text-[#b3b3b3] max-w-[75ch]">
+        {project.full}
+      </p>
+
+      <div className="flex gap-2 mt-6">
+        <a href={project.live} className="px-5 py-2.5 rounded-[24px] border border-white/10 bg-white/5 text-sm font-semibold text-[#ffffff] hover:bg-white/10 transition-colors">
+          View Live ↗
+        </a>
+        <a href={project.github} className="px-5 py-2.5 rounded-[24px] border border-white/10 bg-transparent text-sm font-semibold text-[#ffffff] hover:bg-white/10 transition-colors">
+          GitHub ↗
+        </a>
       </div>
     </main>
   );
